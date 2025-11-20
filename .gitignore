@@ -1,0 +1,4 @@
+poetry.lock
+**__pycache__
+src/resources/**/data/**
+src/resources/**/logs/**
