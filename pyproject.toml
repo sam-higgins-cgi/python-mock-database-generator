@@ -1,9 +1,9 @@
 [project]
-name = "python-database"
+name = "python-mock-database-generator"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Higgins",email = "..."}
+    {name = "Higgins",email = "none@none.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.14"
