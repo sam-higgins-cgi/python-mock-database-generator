@@ -1,41 +1,55 @@
 class Table:
-    def __init__(self, name, columns, database) -> None:
+    def __init__(self, name: str, columns: list, database):
+        """
+        Initialise a table object.
+
+        Parameters
+        ----------
+        name : str
+            The name of the table.
+        columns : list[Column]
+            A list of column objects describing the table schema.
+        database : Database
+            The database connection associated with the table.
+        """
         self.table_name = name
         self.columns = columns
         self.database = database
 
-    def get_column_names(self):
-        columns = []
-
-        for c in self.columns:
-            columns.append(c.name)
-
-        return columns
-
-    def get_column_types(self):
-        types = []
-
-        for c in self.columns:
-            types.append(c.type)
-
-        return types
-
-    def get_column_names_and_types(self):
-        return dict(zip(self.get_column_names(), self.get_column_types()))
-    
-    def create_empty_row(self):
-        object: dict[str, str] = {}
-        
-        for c in self.columns:
-            if not c.is_primary_key:
-                object[c.name] = ""
-
-        return object
-
     def create_table(self):
+        """
+        This function is overwritten by Children of this class.
+        """
         pass
     
     def insert_data(self):
+        """
+        This function is overwritten by Children of this class.
+        """
         pass
 
+    def get_column_names(self):
+        """
+        Return a list of column names in definition order.
+        """
+        return [column.name for column in self.columns]
 
+    def get_column_types(self):
+        """
+        Return a list of column types in definition order.
+        """
+        return [column.type for column in self.columns]
+        
+    def get_column_names_and_types(self):
+        """
+        Return a dictionary of column names and types in definition order.
+        """
+        return {column.name: column.type for column in self.columns}
+    
+    def create_empty_row(self):
+        """
+        Return a dictionary representing an empty row of data for upserting.
+        
+        Excludes any primary key columns.
+        """
+        return {column.name: None for column in self.columns if not column.is_primary_key}

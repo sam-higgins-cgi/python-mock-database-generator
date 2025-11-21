@@ -1,22 +1,22 @@
 from enum import Enum
 
 class Database:
-    def __init__(self) -> None:
+    def __init__(self):
         self.db_type = None
         self.database_name = None
         self.connection = None
         self.cursor = None
 
-    def execute_query(self, query, params=()):
+    def execute_query(self, query: str, params=()):
         pass
 
-    def close(self) -> None:
+    def close(self):
         pass
 
-    def create_table(self, table_name, columns):
+    def create_table(self, table_name: str, columns: list):
         pass
 
-    def insert_data(self, table, data):
+    def insert_data(self, table, data: list[dict]):
         pass
 
 class DatabaseType(Enum):

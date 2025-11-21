@@ -1,3 +1,4 @@
+import random
 from databases.database import DatabaseType
 from tables.classes.column import Column
 from tables.classes.table import Table
@@ -59,8 +60,8 @@ class Users(Table):
             row["city"] = faker.city()
             row["post_code"] = faker.postcode()
             row["country"] = faker.current_country_code()
-            row["phone_number"] = faker.phone_number()
-            row["email"] = faker.email()
+            row["phone_number"] = faker.phone_number() if random.random() > 0.2 else None
+            row["email"] = faker.email() if random.random() > 0.2 else None
             row["role"] = 1
             row["date_added"] = datetime.now()
             row["is_deleted"] = 0

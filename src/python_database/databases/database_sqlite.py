@@ -3,68 +3,73 @@ from databases.database import Database, DatabaseType
 import sqlite3
 
 class DatabaseSqlite(Database):
-    def __init__(self, db_name) -> None:
+    def __init__(self, db_name: str):
         self.db_type = DatabaseType.SQLITE
         self.database_name = db_name
         self.connection = sqlite3.connect(self.database_name)
         self.cursor = self.connection.cursor()
 
-    def execute_query(self, query, params=()):
+    def execute_query(self, query: str, params=()):
         self.cursor.execute(query, params)
         self.connection.commit()
-        return self.cursor.fetchall()    
+        if self.cursor.description == None: 
+            return [] 
+        else: 
+            return self.cursor.fetchall()
 
     def close(self) -> None:
         self.connection.close()
 
-    def create_table(self, table_name, columns):
-        query = f"CREATE TABLE IF NOT EXISTS {table_name} ()"
-        
+    def create_table(self, table_name: str, columns: list):
         column_definitions = []
 
-        for definition in columns:
-            tokens = [definition.name, definition.type]
+        for column in columns:
+            definition = " ".join(filter(None, [
+                column.name, 
+                column.type, 
+                "NULL" if column.is_nullable else "NOT NULL",
+                f"DEFAULT {column.default}" if column.default is not None else "",
+                "UNIQUE" if column.is_unique else ""                
+            ]))
+            column_definitions.append(definition)
 
-            if definition.is_primary_key: tokens.append("PRIMARY KEY") 
+        primary_key_columns = [column.name for column in columns if column.is_primary_key]
 
-            tokens.append(definition.nullable)
+        if primary_key_columns:
+            primary_key = f"PRIMARY KEY ({", ".join(primary_key_columns)})"
+            column_definitions.append(primary_key)
 
-            column_definitions.append(" ".join(tokens))
-
-        query = query.replace("()", f"({", ".join(column_definitions)})")
-
+        query = f"CREATE TABLE IF NOT EXISTS {table_name} ({", ".join(column_definitions)})"
+        
         #print(query)
 
         self.execute_query(query)
 
-    def insert_data(self, table, data):
-        query = f"INSERT INTO {table.table_name} (columns) VALUES (values)"
+    def insert_data(self, table, data: list[dict]):
 
-        column_types = table.get_column_names_and_types()
+        column_type_lookup = table.get_column_names_and_types()
 
-        insert_columns = ", ".join(data[0].keys())
-
-        query = query.replace("(columns)", f"({insert_columns})")
+        insert_column_names = ", ".join(data[0].keys())
 
         value_list = []
 
-        for r in data:
+        for row in data:
             row_values = []
-            for k, v in r.items():
-                type = column_types[k]
-
-                match (type):
-                    case "INTEGER" | "INT": row_values.append(f"{v}")
-                    case "DATE": row_values.append(f"\'{v.strftime("%d/%m/%Y")}\'")
-                    case "DATETIME" | "TIMESTAMP": row_values.append(f"\'{v.strftime("%d/%m/%Y %H:%M:%S.%f")}\'")
-                    case _: row_values.append(f"\'{v.replace("'", "''")}\'")
-            
+            for column_name, column_value in row.items():
+                if (column_value is None):
+                    row_values.append("NULL")
+                else:
+                    match (column_type_lookup[column_name]):
+                        case "INTEGER" | "INT": row_values.append(f"{column_value}")
+                        case "DATE": row_values.append(f"\'{column_value.strftime("%d/%m/%Y")}\'")
+                        case "DATETIME" | "TIMESTAMP": row_values.append(f"\'{column_value.strftime("%d/%m/%Y %H:%M:%S.%f")}\'")
+                        case _: row_values.append(f"\'{column_value.replace("'", "''")}\'")
             value_list.append(f"({", ".join(row_values)})")
         
-        values = ", ".join(value_list)
+        insert_values = ", ".join(value_list)
 
-        query = query.replace("(values)", f"{values}")
-
+        query = f"INSERT INTO {table.table_name} ({insert_column_names}) VALUES {insert_values}"
+       
         #print(query)
         
         self.execute_query(query)
