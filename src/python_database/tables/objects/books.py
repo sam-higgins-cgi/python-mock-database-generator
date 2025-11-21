@@ -1,4 +1,4 @@
-from databases.database import Database, DatabaseType
+from databases.database import DatabaseType
 from tables.classes.column import Column
 from tables.classes.table import Table
 from data.data_generator import DataGenerator
@@ -27,7 +27,7 @@ class Books(Table):
             Column("date_added", "TIMESTAMP")
     ]
 
-    def __init__(self, database: Database) -> None:
+    def __init__(self, database):
         self.table_name = "books"
         self.database = database
         self.faker = DataGenerator()
@@ -35,7 +35,7 @@ class Books(Table):
             case DatabaseType.SQLITE: self.columns = self.columns_sqlite
             case DatabaseType.POSTGRES: self.columns = self.columns_postgres
 
-    def generate_fake_data(self, rows: int) -> list:
+    def generate_fake_data(self, rows):
         data = []
 
         for _ in range(rows):
@@ -57,5 +57,5 @@ class Books(Table):
     def create_table(self):
         self.database.create_table(self.table_name, self.columns)
 
-    def insert_fake_data(self, rows: int):
+    def insert_fake_data(self, rows):
         self.database.insert_data(self, self.generate_fake_data(rows))

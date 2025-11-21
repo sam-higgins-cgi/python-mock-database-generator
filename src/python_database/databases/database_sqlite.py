@@ -1,10 +1,9 @@
 from databases.database import Database, DatabaseType
-from tables.classes.table import Table
 
 import sqlite3
 
 class DatabaseSqlite(Database):
-    def __init__(self, db_name):
+    def __init__(self, db_name) -> None:
         self.db_type = DatabaseType.SQLITE
         self.database_name = db_name
         self.connection = sqlite3.connect(self.database_name)
@@ -15,10 +14,10 @@ class DatabaseSqlite(Database):
         self.connection.commit()
         return self.cursor.fetchall()    
 
-    def close(self):
+    def close(self) -> None:
         self.connection.close()
 
-    def create_table(self, table_name, columns) -> None:
+    def create_table(self, table_name, columns):
         query = f"CREATE TABLE IF NOT EXISTS {table_name} ()"
         
         column_definitions = []
@@ -38,7 +37,7 @@ class DatabaseSqlite(Database):
 
         self.execute_query(query)
 
-    def insert_data(self, table: Table, data: list[dict]):
+    def insert_data(self, table, data):
         query = f"INSERT INTO {table.table_name} (columns) VALUES (values)"
 
         column_types = table.get_column_names_and_types()

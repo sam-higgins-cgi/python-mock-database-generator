@@ -10,13 +10,13 @@ class Database:
     def execute_query(self, query, params=()):
         pass
 
-    def close(self):
+    def close(self) -> None:
         pass
 
-    def create_table(self, table_name, columns) -> None:
+    def create_table(self, table_name, columns):
         pass
 
-    def insert_data(self, data) -> None:
+    def insert_data(self, table, data):
         pass
 
 class DatabaseType(Enum):

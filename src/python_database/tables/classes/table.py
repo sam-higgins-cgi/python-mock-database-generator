@@ -1,13 +1,10 @@
-from databases.database import Database
-from tables.classes.column import Column
-
 class Table:
-    def __init__(self, name: str, columns: list[Column], database: Database) -> None:
+    def __init__(self, name, columns, database) -> None:
         self.table_name = name
         self.columns = columns
         self.database = database
 
-    def get_column_names(self) -> list[str]:
+    def get_column_names(self):
         columns = []
 
         for c in self.columns:
@@ -15,7 +12,7 @@ class Table:
 
         return columns
 
-    def get_column_types(self) -> list[str]:
+    def get_column_types(self):
         types = []
 
         for c in self.columns:
@@ -23,10 +20,10 @@ class Table:
 
         return types
 
-    def get_column_names_and_types(self) -> dict[str, str]:
+    def get_column_names_and_types(self):
         return dict(zip(self.get_column_names(), self.get_column_types()))
     
-    def create_empty_row(self) -> dict[str, str]:
+    def create_empty_row(self):
         object: dict[str, str] = {}
         
         for c in self.columns:
@@ -35,10 +32,10 @@ class Table:
 
         return object
 
-    def create_table(self) -> None:
+    def create_table(self):
         pass
     
-    def insert_data(self) -> None:
+    def insert_data(self):
         pass
 
 

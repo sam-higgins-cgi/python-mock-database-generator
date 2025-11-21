@@ -1,7 +1,6 @@
 from databases.database import Database, DatabaseType
-from tables.classes.table import Table
-import psycopg2
 
+import psycopg2
 
 class DatabasePostgres(Database):
     def __init__(self, db_name):
@@ -18,10 +17,10 @@ class DatabasePostgres(Database):
         else: 
             return self.cursor.fetchall()
 
-    def close(self):
+    def close(self) -> None:
         self.connection.close()
 
-    def create_table(self, table_name, columns) -> None:
+    def create_table(self, table_name, columns):
         query = f"CREATE TABLE IF NOT EXISTS public.{table_name} ()"
         
         column_definitions = []
@@ -41,7 +40,7 @@ class DatabasePostgres(Database):
 
         self.execute_query(query)
 
-    def insert_data(self, table: Table, data: list[dict]):
+    def insert_data(self, table, data):
         query = f"INSERT INTO {table.table_name} (columns) VALUES (values)"
 
         column_types = table.get_column_names_and_types()
