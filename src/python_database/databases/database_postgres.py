@@ -27,6 +27,9 @@ class DatabasePostgres(Database):
     def close(self) -> None:
         self.connection.close()
 
+    def drop_table(self, table_name: str):
+        self.execute_query(f"DROP TABLE IF EXISTS {table_name}")
+
     def create_table(self, table_name: str, columns: list):
         column_definitions = []
 

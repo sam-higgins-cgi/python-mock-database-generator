@@ -11,6 +11,9 @@ class Database:
     def close(self):
         pass
 
+    def drop_table(self, table_name: str):
+        pass
+
     def create_table(self, table_name: str, columns: list):
         pass
 
