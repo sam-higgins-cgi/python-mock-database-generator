@@ -1,12 +1,14 @@
-from databases.database import Database, DatabaseType
+from configuration.db_config import Config
+from databases.database import Database
+from databases.supported_databases import SupportedDatabases
 
 import sqlite3
 
 class DatabaseSqlite(Database):
-    def __init__(self, db_name: str):
-        self.db_type = DatabaseType.SQLITE
-        self.database_name = db_name
-        self.connection = sqlite3.connect(self.database_name)
+    def __init__(self):
+        self.db_type = SupportedDatabases.SQLITE
+        self.database_name = Config.SQLITE_PATH
+        self.connection = sqlite3.connect(Config.SQLITE_PATH)
         self.cursor = self.connection.cursor()
 
     def execute_query(self, query: str, params=()):

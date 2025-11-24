@@ -1,9 +1,9 @@
-import random
-from databases.database import DatabaseType
+from data.data_generator import DataGenerator
+from databases.supported_databases import SupportedDatabases
+from datetime import datetime
+from random import random
 from tables.classes.column import Column
 from tables.classes.table import Table
-from data.data_generator import DataGenerator
-from datetime import datetime
 
 class Users(Table):
     columns_sqlite = [
@@ -43,8 +43,8 @@ class Users(Table):
         self.database = database
         self.faker = DataGenerator()
         match (database.db_type):
-            case DatabaseType.SQLITE: self.columns = self.columns_sqlite
-            case DatabaseType.POSTGRES: self.columns = self.columns_postgres
+            case SupportedDatabases.SQLITE: self.columns = self.columns_sqlite
+            case SupportedDatabases.POSTGRES: self.columns = self.columns_postgres
 
     def generate_fake_data(self, rows):
         data = []
@@ -60,8 +60,8 @@ class Users(Table):
             row["city"] = faker.city()
             row["post_code"] = faker.postcode()
             row["country"] = faker.current_country_code()
-            row["phone_number"] = faker.phone_number() if random.random() > 0.2 else None
-            row["email"] = faker.email() if random.random() > 0.2 else None
+            row["phone_number"] = faker.phone_number() if random() > 0.2 else None
+            row["email"] = faker.email() if random() > 0.2 else None
             row["role"] = 1
             row["date_added"] = datetime.now()
             row["is_deleted"] = 0

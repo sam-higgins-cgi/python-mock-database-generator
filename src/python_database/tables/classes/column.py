@@ -10,7 +10,7 @@ class Column:
             default = None
     ):
         """
-        Represent a single column in a table schema.
+        Represent a single column definition in a table schema.
 
         Parameters
         ----------

@@ -1,12 +1,19 @@
-from databases.database import Database, DatabaseType
+from configuration.db_config import Config
+from databases.database import Database
+from databases.supported_databases import SupportedDatabases
 
 import psycopg2
 
 class DatabasePostgres(Database):
-    def __init__(self, db_name):
-        self.db_type = DatabaseType.POSTGRES
-        self.database_name = db_name
-        self.connection = psycopg2.connect(host="localhost", dbname=db_name, user="sam.higgins", port="5432")
+    def __init__(self):
+        self.db_type = SupportedDatabases.POSTGRES
+        self.database_name = Config.POSTGRES_DATABASE
+        self.connection = psycopg2.connect(
+            host=Config.POSTGRES_HOST, 
+            dbname=Config.POSTGRES_DATABASE, 
+            user=Config.POSTGRES_USER, 
+            port=Config.POSTGRES_PORT
+        )
         self.cursor = self.connection.cursor()
 
     def execute_query(self, query: str, params=()):

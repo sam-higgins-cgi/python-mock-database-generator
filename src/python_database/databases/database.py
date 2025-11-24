@@ -1,5 +1,3 @@
-from enum import Enum
-
 class Database:
     def __init__(self):
         self.db_type = None
@@ -18,7 +16,3 @@ class Database:
 
     def insert_data(self, table, data: list[dict]):
         pass
-
-class DatabaseType(Enum):
-    SQLITE = "sqlite"
-    POSTGRES = "postgres"

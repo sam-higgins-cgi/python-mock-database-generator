@@ -1,35 +1,29 @@
 from data.data_generator import DataGenerator
 from databases.supported_databases import SupportedDatabases
 from datetime import datetime
-from random import random
+from random import choice, random
 from tables.classes.column import Column
 from tables.classes.table import Table
 
-class Books(Table):
+class UserBooks(Table):
     columns_sqlite = [
             Column("id", "INTEGER", is_nullable=False, is_primary_key=True),
-            Column("title", "TEXT"),
-            Column("author", "TEXT"),
-            Column("date_published", "DATE"),
-            Column("genre", "TEXT"),
-            Column("language", "TEXT"),
-            Column("isbn", "TEXT"),
+            Column("user_id", "INT"),
+            Column("book_id", "INT"),
+            Column("book_returned", "INT"),
             Column("date_added", "DATETIME")
     ]
 
     columns_postgres = [
             Column("id", "SERIAL", is_nullable=False, is_primary_key=True),
-            Column("title", "VARCHAR"),
-            Column("author", "VARCHAR"),
-            Column("date_published", "DATE"),
-            Column("genre", "VARCHAR"),
-            Column("language", "VARCHAR"),
-            Column("isbn", "VARCHAR"),
+            Column("user_id", "INT"),
+            Column("book_id", "INT"),
+            Column("book_returned", "INT"),
             Column("date_added", "TIMESTAMP")
     ]
 
     def __init__(self, database):
-        self.table_name = "books"
+        self.table_name = "user_books"
         self.database = database
         self.faker = DataGenerator()
         match (database.db_type):
@@ -38,17 +32,16 @@ class Books(Table):
 
     def generate_fake_data(self, rows):
         data = []
+        
+        user_ids = [id[0] for id in self.database.execute_query("SELECT id FROM users ORDER BY RANDOM()")]
+        book_ids = [id[0] for id in self.database.execute_query("SELECT id FROM books ORDER BY RANDOM()")]
 
         for _ in range(rows):
             row = super().create_empty_row()
-            faker = self.faker.get_random_faker()
 
-            row["title"] = " ".join(faker.words(3))
-            row["author"] = f"{faker.last_name()}, {faker.first_name()}{f" {faker.random_letter()}" if random() > 0.6 else ""}"
-            row["date_published"] = faker.date_between()
-            row["genre"] = faker.genre()
-            row["language"] = faker.language_name()
-            row["isbn"] = faker.isbn10()
+            row["user_id"] = choice(user_ids)
+            row["book_id"] = choice(book_ids)
+            row["book_returned"] = 1 if random() > 0.5 else 0
             row["date_added"] = datetime.now()
 
             data.append(row)
