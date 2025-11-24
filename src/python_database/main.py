@@ -11,8 +11,6 @@ from tables.objects.users import Users
 from tables.objects.books import Books
 
 def main():
-    print("THIS IS A MAIN FUNCTION")
-
     match (Config.DATABASE_TYPE.lower()):
         case SupportedDatabases.SQLITE: database = DatabaseSqlite()
         case SupportedDatabases.POSTGRES: database = DatabasePostgres()
